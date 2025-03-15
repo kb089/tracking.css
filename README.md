@@ -1,11 +1,12 @@
-# 🕵️‍♂️ CSS-Based Tracking Pixel
+# 🕵️‍♂️ CSS-Based Tracking Pixel with Cache Busting
 
-This is a **stealthy tracking method** that logs **anonymous page visits** without JavaScript, using a hidden CSS request.
+This is a **stealthy tracking method** that logs **anonymous page visits** without JavaScript, using a hidden CSS request. Cache busting is added to ensure fresh requests.
 
 ## 📌 How It Works
 1. The `tracking.css` file forces the browser to request `tracker.php` (without displaying anything).
 2. The `tracker.php` script logs the visit and returns a **tiny transparent GIF** to complete the request.
 3. No JavaScript is required, and ad blockers typically ignore it.
+4. Cache busting ensures every request is unique to avoid browser caching.
 
 ---
 
@@ -13,7 +14,7 @@ This is a **stealthy tracking method** that logs **anonymous page visits** witho
 
 ```css
 /* =============================================
- 🕵️‍♂️ STEALTH CSS TRACKING PIXEL
+ 🕵️‍♂️ STEALTH CSS TRACKING PIXEL (WITH CACHE BUSTING)
  - Uses CSS to request "tracker.php" without visibility.
  - Works even if JavaScript is blocked.
  - Forces the browser to send tracking data.
@@ -21,7 +22,7 @@ This is a **stealthy tracking method** that logs **anonymous page visits** witho
 
 body::after {
     /* Forces the browser to request "tracker.php" */
-    content: url('tracker.php?url=PAGE_URL');
+    content: url('tracker.php?url=PAGE_URL&t=' + new Date().getTime()); /* Cache Buster */
 
     /* Ensures the element is completely invisible */
     display: none;
@@ -29,7 +30,8 @@ body::after {
 }
 ```
 
-🔹 **Dynamically replaces `PAGE_URL`** using the `<link>` tag in HTML.
+🔹 **Dynamically replaces `PAGE_URL`** using the `<link>` tag in HTML. 
+🔹 **Cache busting** added via a timestamp query parameter.
 
 ---
 
@@ -38,7 +40,7 @@ body::after {
 ```php
 <?php
 /* =============================================
- 🕵️‍♂️ STEALTH PHP TRACKING SCRIPT
+ 🕵️‍♂️ STEALTH PHP TRACKING SCRIPT (WITH CACHE BUSTING)
  - Logs anonymous page visits via CSS.
  - Does NOT store personal data (fully anonymous).
  - Returns a transparent image to complete the request.
@@ -91,10 +93,11 @@ exit;
 Add this inside `<head>`:
 
 ```html
-<link rel="stylesheet" href="tracking.css?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>">
+<link rel="stylesheet" href="tracking.css?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>&t=<?= time() ?>">
 ```
 
 🔹 **This dynamically passes the page URL** to `tracker.php` for logging.
+🔹 **`t=<?= time() ?>` ensures cache busting** (each request is unique).
 
 ---
 
@@ -104,6 +107,7 @@ Add this inside `<head>`:
 ✅ **Invisible & Silent** – Users never see anything.  
 ✅ **No Consent Required (GDPR Safe)** – No cookies, just logs.  
 ✅ **Fast & Lightweight** – Only a **tiny CSS trick + PHP logging**.  
+✅ **Cache Busting Prevents Caching Issues** – Ensures tracking requests are always fresh.
 
 ---
 
@@ -111,3 +115,5 @@ Add this inside `<head>`:
 1. Upload `tracking.css` & `tracker.php` to your server.
 2. Add the `<link>` tag to your HTML `<head>`.
 3. Verify that `tracking.log` is being generated with logs.
+
+✅ Done! 🚀

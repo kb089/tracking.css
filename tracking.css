@@ -1,0 +1,17 @@
+/* ==============================================
+ 🕵️‍♂️ STEALTH CSS TRACKING PIXEL (WITH CACHE BUSTING)
+ - Uses CSS to request "tracker.php" without visibility.
+ - Works even if JavaScript is blocked.
+ - Forces the browser to send tracking data.
+ - Cache busting added to ensure fresh requests.
+=============================================
+*/
+
+body::after {
+    /* Forces the browser to request "tracker.php" */
+    content: url('tracker.php?url=PAGE_URL&t=' + new Date().getTime()); /* Cache Buster */
+
+    /* Ensures the element is completely invisible */
+    display: none;
+    visibility: hidden;
+}
